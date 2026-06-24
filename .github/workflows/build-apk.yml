@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -16,14 +16,18 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y python3-pip git zip unzip openjdk-17-jdk
-          pip3 install buildozer cython==0.29.37
+          pip3 install buildozer cython
+
+      - name: Accept Android licenses
+        run: |
+          yes | sdkmanager --licenses || true
 
       - name: Build APK
         run: |
-          buildozer -v android debug
+          buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Calculadora-APK
+          name: apk
           path: bin/*.apk
